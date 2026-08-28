@@ -10,10 +10,10 @@ export const teamMembers = [
     alias: 'SmartDinamite',
     fullName: 'Saepudin',
     bio: 'Guiding the overarching vision of UBS. Architecting an all-inclusive Web3 ecosystem at Universitas Mercu Buana to onboard the next billion users and mint elite campus builders. WAGMI.',
-    imageFile: 'saepudin.png',
+    imageFile: 'saepudin.jpeg',
     initials: 'SD',
     socials: {
-      linkedin: '#',
+      linkedin: 'https://www.linkedin.com/in/saepudin-600265309/',
       twitter: '#',
       github: '#'
     }
@@ -23,7 +23,7 @@ export const teamMembers = [
     role: 'Chief Technology Officer',
     roleShort: 'CTO',
     alias: '0xAnakMommy',
-    fullName: 'Rayhan Aziel Abbrar',
+    fullName: 'Rayhan',
     bio: 'Lead protocol hacker and smart contract architect. Turning campus degens into high-conviction Solidity & Rust devs while shipping zero-bug on-chain infrastructure.',
     imageFile: 'rayhan.jpeg',
     initials: 'RA',
@@ -55,7 +55,7 @@ export const teamMembers = [
     alias: 'StarmanMagician',
     fullName: 'Sakti',
     bio: 'Executing guild operations, IRL campus meetups, builder hackathons, and institutional alliance integrations. Ensuring seamless workflow with ultra-low latency.',
-    imageFile: 'sakti.png',
+    imageFile: 'sakti.jpeg',
     initials: 'SM',
     socials: {
       linkedin: 'https://www.linkedin.com/in/sakti-bintang',
