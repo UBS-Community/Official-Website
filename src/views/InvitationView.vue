@@ -23,7 +23,8 @@ import {
   Mail,
   Phone,
   GraduationCap,
-  X
+  X,
+  Check
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -48,15 +49,20 @@ const form = ref({
   email: '',
   whatsapp: '',
   track: 'developer',
-  proofUbscIg: '',
-  proofUbscLinkedin: '',
-  proofUbscTiktok: '',
-  proofUbscFile: null,
-  proofUbscFilePreview: '',
-  proofExplomateX: '',
-  proofExplomateIg: '',
-  proofExplomateFile: null,
-  proofExplomateFilePreview: ''
+  
+  // Section 1: UBSC Proofs (3 files required)
+  proofUbscIgFile: null,
+  proofUbscIgPreview: '',
+  proofUbscLinkedinFile: null,
+  proofUbscLinkedinPreview: '',
+  proofUbscTiktokFile: null,
+  proofUbscTiktokPreview: '',
+
+  // Section 2: Explomate Proofs (2 files required)
+  proofExplomateXFile: null,
+  proofExplomateXPreview: '',
+  proofExplomateIgFile: null,
+  proofExplomateIgPreview: ''
 })
 
 const campusBranches = [
@@ -103,33 +109,67 @@ const tracks = [
   }
 ]
 
-// Handle File Uploads
-const handleFileUpload = (event, type) => {
+// Handle Individual File Uploads
+const handleFileUpload = (event, slot) => {
   const file = event.target.files[0]
   if (!file) return
 
   const reader = new FileReader()
   reader.onload = (e) => {
-    if (type === 'ubsc') {
-      form.value.proofUbscFile = file
-      form.value.proofUbscFilePreview = e.target.result
-    } else if (type === 'explomate') {
-      form.value.proofExplomateFile = file
-      form.value.proofExplomateFilePreview = e.target.result
+    if (slot === 'ubsc_ig') {
+      form.value.proofUbscIgFile = file
+      form.value.proofUbscIgPreview = e.target.result
+    } else if (slot === 'ubsc_linkedin') {
+      form.value.proofUbscLinkedinFile = file
+      form.value.proofUbscLinkedinPreview = e.target.result
+    } else if (slot === 'ubsc_tiktok') {
+      form.value.proofUbscTiktokFile = file
+      form.value.proofUbscTiktokPreview = e.target.result
+    } else if (slot === 'explomate_x') {
+      form.value.proofExplomateXFile = file
+      form.value.proofExplomateXPreview = e.target.result
+    } else if (slot === 'explomate_ig') {
+      form.value.proofExplomateIgFile = file
+      form.value.proofExplomateIgPreview = e.target.result
     }
   }
   reader.readAsDataURL(file)
 }
 
-const removeFile = (type) => {
-  if (type === 'ubsc') {
-    form.value.proofUbscFile = null
-    form.value.proofUbscFilePreview = ''
-  } else if (type === 'explomate') {
-    form.value.proofExplomateFile = null
-    form.value.proofExplomateFilePreview = ''
+const removeFile = (slot) => {
+  if (slot === 'ubsc_ig') {
+    form.value.proofUbscIgFile = null
+    form.value.proofUbscIgPreview = ''
+  } else if (slot === 'ubsc_linkedin') {
+    form.value.proofUbscLinkedinFile = null
+    form.value.proofUbscLinkedinPreview = ''
+  } else if (slot === 'ubsc_tiktok') {
+    form.value.proofUbscTiktokFile = null
+    form.value.proofUbscTiktokPreview = ''
+  } else if (slot === 'explomate_x') {
+    form.value.proofExplomateXFile = null
+    form.value.proofExplomateXPreview = ''
+  } else if (slot === 'explomate_ig') {
+    form.value.proofExplomateIgFile = null
+    form.value.proofExplomateIgPreview = ''
   }
 }
+
+// Counts for Step 4
+const ubscUploadedCount = computed(() => {
+  let count = 0
+  if (form.value.proofUbscIgPreview) count++
+  if (form.value.proofUbscLinkedinPreview) count++
+  if (form.value.proofUbscTiktokPreview) count++
+  return count
+})
+
+const explomateUploadedCount = computed(() => {
+  let count = 0
+  if (form.value.proofExplomateXPreview) count++
+  if (form.value.proofExplomateIgPreview) count++
+  return count
+})
 
 // Validations for each step
 const isStep1Valid = computed(() => {
@@ -157,9 +197,7 @@ const isStep3Valid = computed(() => {
 })
 
 const isStep4Valid = computed(() => {
-  const hasUbscProof = form.value.proofUbscFile || form.value.proofUbscIg || form.value.proofUbscLinkedin || form.value.proofUbscTiktok
-  const hasExplomateProof = form.value.proofExplomateFile || form.value.proofExplomateX || form.value.proofExplomateIg
-  return hasUbscProof && hasExplomateProof
+  return ubscUploadedCount.value === 3 && explomateUploadedCount.value === 2
 })
 
 const nextStep = () => {
@@ -196,15 +234,13 @@ const handleSubmit = async () => {
     track: form.value.track,
     trackLabel: selectedTrackObj ? selectedTrackObj.title : form.value.track,
     proofUbsc: {
-      ig: form.value.proofUbscIg,
-      linkedin: form.value.proofUbscLinkedin,
-      tiktok: form.value.proofUbscTiktok,
-      hasScreenshot: !!form.value.proofUbscFile
+      instagram: !!form.value.proofUbscIgPreview ? 'Verified' : 'Missing',
+      linkedin: !!form.value.proofUbscLinkedinPreview ? 'Verified' : 'Missing',
+      tiktok: !!form.value.proofUbscTiktokPreview ? 'Verified' : 'Missing'
     },
     proofExplomate: {
-      x: form.value.proofExplomateX,
-      ig: form.value.proofExplomateIg,
-      hasScreenshot: !!form.value.proofExplomateFile
+      x: !!form.value.proofExplomateXPreview ? 'Verified' : 'Missing',
+      instagram: !!form.value.proofExplomateIgPreview ? 'Verified' : 'Missing'
     }
   }
 
@@ -695,7 +731,7 @@ const handleSubmit = async () => {
             </div>
           </div>
 
-          <!-- STEP 4: Social Proof Verification (UBSC & Explomate) -->
+          <!-- STEP 4: Social Proof Verification (3 UBSC + 2 Explomate Proofs Required) -->
           <div v-else-if="currentStep === 4" class="space-y-6 animate-fadeIn">
             <div class="border-b border-white/10 pb-4">
               <h2 class="font-display font-bold text-xl sm:text-2xl text-white flex items-center gap-2.5">
@@ -703,181 +739,275 @@ const handleSubmit = async () => {
                 <span>Social Proof Verification</span>
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Follow the official UMB Blockchain Society accounts & our ecosystem DApp partner Explomate.
+                Upload proof of follow screenshots for all 3 official UBS accounts and 2 Explomate DApp accounts.
               </p>
             </div>
 
-            <!-- Card 1: Follow UBSC -->
+            <!-- SECTION 1: Follow UBSC (3 Files Required) -->
             <div class="glass-panel p-5 sm:p-6 rounded-2xl border border-gold-400/30 space-y-4">
-              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
                 <div class="flex items-center gap-2.5">
                   <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1 text-gold-400">
                     <Sparkles class="w-4 h-4" />
                   </div>
                   <div>
                     <h3 class="font-bold text-sm text-white">1. Follow UMB Blockchain Society Official Accounts</h3>
-                    <p class="text-xs text-gold-400/90">Required: Follow IG, LinkedIn, & TikTok</p>
+                    <p class="text-xs text-gold-400/90">All 3 screenshot proofs required (Instagram, LinkedIn, & TikTok)</p>
                   </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" :class="ubscUploadedCount === 3 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-gold-400/15 text-gold-300 border border-gold-400/30'">
+                  <Check v-if="ubscUploadedCount === 3" class="w-3.5 h-3.5" />
+                  <span>{{ ubscUploadedCount }} of 3 Uploaded</span>
                 </div>
               </div>
 
-              <!-- Social Links -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <a
-                  href="https://www.instagram.com/ubs.community?utm_source=qr&igsi=dHR4eDQ3bnZvbW1u"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2.5 rounded-xl bg-obsidian-900 border border-white/10 hover:border-pink-500/50 hover:bg-pink-500/10 transition flex items-center justify-between text-xs text-slate-200 group"
-                >
-                  <div class="flex items-center gap-2">
-                    <SocialIcon name="Instagram" class="w-4 h-4 text-pink-400" />
-                    <span>@ubs.community</span>
+              <!-- 3 Dedicated Upload Slots for UBSC -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+                <!-- Slot 1: Instagram -->
+                <div class="p-3.5 rounded-xl bg-obsidian-900/90 border border-white/10 flex flex-col justify-between space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <SocialIcon name="Instagram" class="w-4 h-4 text-pink-400" />
+                      <span class="text-xs font-semibold text-white">Instagram</span>
+                    </div>
+                    <a
+                      href="https://www.instagram.com/ubs.community?utm_source=qr&igsi=dHR4eDQ3bnZvbW1u"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-[10px] text-pink-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>@ubs.community</span>
+                      <ExternalLink class="w-3 h-3" />
+                    </a>
                   </div>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-500 group-hover:text-pink-400" />
-                </a>
 
-                <a
-                  href="https://www.linkedin.com/company/umb-blockchain-society-ubs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2.5 rounded-xl bg-obsidian-900 border border-white/10 hover:border-blue-500/50 hover:bg-blue-500/10 transition flex items-center justify-between text-xs text-slate-200 group"
-                >
-                  <div class="flex items-center gap-2">
-                    <SocialIcon name="Linkedin" class="w-4 h-4 text-blue-400" />
-                    <span>LinkedIn UBS</span>
+                  <!-- Upload or Preview -->
+                  <div v-if="form.proofUbscIgPreview" class="relative rounded-xl border border-pink-500/40 bg-pink-500/5 p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                      <img :src="form.proofUbscIgPreview" alt="IG Proof" class="w-10 h-10 rounded-lg object-cover border border-pink-500/30 shrink-0" />
+                      <span class="text-[11px] text-emerald-300 truncate font-medium">IG Proof Added</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeFile('ubsc_ig')"
+                      class="w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shrink-0 ml-1"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
-                </a>
 
-                <a
-                  href="https://www.tiktok.com/@ubs.community"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2.5 rounded-xl bg-obsidian-900 border border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/10 transition flex items-center justify-between text-xs text-slate-200 group"
-                >
-                  <div class="flex items-center gap-2">
-                    <SocialIcon name="TikTok" class="w-4 h-4 text-cyan-400" />
-                    <span>TikTok @ubs.community</span>
-                  </div>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400" />
-                </a>
-              </div>
-
-              <!-- Upload Screenshot or Username -->
-              <div class="pt-2">
-                <label class="block text-xs font-medium text-slate-300 mb-2">
-                  Upload a follow proof screenshot (or enter your IG/TikTok username) *
-                </label>
-                
-                <div v-if="form.proofUbscFilePreview" class="relative inline-block mb-3">
-                  <img :src="form.proofUbscFilePreview" alt="Preview UBSC" class="h-24 rounded-xl border border-gold-400/40 object-cover" />
-                  <button
-                    type="button"
-                    @click="removeFile('ubsc')"
-                    class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 shadow"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <label class="flex-1 px-4 py-3 rounded-xl border border-dashed border-gold-400/40 hover:border-gold-400 bg-obsidian-900/80 cursor-pointer flex items-center justify-center gap-2 text-xs text-slate-300 transition">
-                    <Upload class="w-4 h-4 text-gold-400" />
-                    <span>{{ form.proofUbscFile ? form.proofUbscFile.name : 'Upload Proof Screenshot' }}</span>
+                  <label v-else class="px-3 py-4 rounded-xl border border-dashed border-pink-500/40 hover:border-pink-400 bg-obsidian-950 cursor-pointer flex flex-col items-center justify-center gap-1.5 text-center transition group">
+                    <Upload class="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
+                    <span class="text-[11px] text-slate-300 font-medium">Upload IG Screenshot *</span>
                     <input
                       type="file"
                       accept="image/*"
                       class="sr-only"
-                      @change="(e) => handleFileUpload(e, 'ubsc')"
+                      @change="(e) => handleFileUpload(e, 'ubsc_ig')"
                     />
                   </label>
-                  <input
-                    v-model="form.proofUbscIg"
-                    type="text"
-                    placeholder="Your IG / TikTok username"
-                    class="sm:w-64 px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-xs outline-none transition"
-                  />
+                </div>
+
+                <!-- Slot 2: LinkedIn -->
+                <div class="p-3.5 rounded-xl bg-obsidian-900/90 border border-white/10 flex flex-col justify-between space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <SocialIcon name="Linkedin" class="w-4 h-4 text-blue-400" />
+                      <span class="text-xs font-semibold text-white">LinkedIn</span>
+                    </div>
+                    <a
+                      href="https://www.linkedin.com/company/umb-blockchain-society-ubs"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-[10px] text-blue-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>LinkedIn UBS</span>
+                      <ExternalLink class="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  <!-- Upload or Preview -->
+                  <div v-if="form.proofUbscLinkedinPreview" class="relative rounded-xl border border-blue-500/40 bg-blue-500/5 p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                      <img :src="form.proofUbscLinkedinPreview" alt="LinkedIn Proof" class="w-10 h-10 rounded-lg object-cover border border-blue-500/30 shrink-0" />
+                      <span class="text-[11px] text-emerald-300 truncate font-medium">LinkedIn Proof Added</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeFile('ubsc_linkedin')"
+                      class="w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shrink-0 ml-1"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <label v-else class="px-3 py-4 rounded-xl border border-dashed border-blue-500/40 hover:border-blue-400 bg-obsidian-950 cursor-pointer flex flex-col items-center justify-center gap-1.5 text-center transition group">
+                    <Upload class="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span class="text-[11px] text-slate-300 font-medium">Upload LinkedIn Screenshot *</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      class="sr-only"
+                      @change="(e) => handleFileUpload(e, 'ubsc_linkedin')"
+                    />
+                  </label>
+                </div>
+
+                <!-- Slot 3: TikTok -->
+                <div class="p-3.5 rounded-xl bg-obsidian-900/90 border border-white/10 flex flex-col justify-between space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <SocialIcon name="TikTok" class="w-4 h-4 text-cyan-400" />
+                      <span class="text-xs font-semibold text-white">TikTok</span>
+                    </div>
+                    <a
+                      href="https://www.tiktok.com/@ubs.community"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-[10px] text-cyan-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>@ubs.community</span>
+                      <ExternalLink class="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  <!-- Upload or Preview -->
+                  <div v-if="form.proofUbscTiktokPreview" class="relative rounded-xl border border-cyan-500/40 bg-cyan-500/5 p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                      <img :src="form.proofUbscTiktokPreview" alt="TikTok Proof" class="w-10 h-10 rounded-lg object-cover border border-cyan-500/30 shrink-0" />
+                      <span class="text-[11px] text-emerald-300 truncate font-medium">TikTok Proof Added</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeFile('ubsc_tiktok')"
+                      class="w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shrink-0 ml-1"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <label v-else class="px-3 py-4 rounded-xl border border-dashed border-cyan-500/40 hover:border-cyan-400 bg-obsidian-950 cursor-pointer flex flex-col items-center justify-center gap-1.5 text-center transition group">
+                    <Upload class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                    <span class="text-[11px] text-slate-300 font-medium">Upload TikTok Screenshot *</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      class="sr-only"
+                      @change="(e) => handleFileUpload(e, 'ubsc_tiktok')"
+                    />
+                  </label>
                 </div>
               </div>
             </div>
 
-            <!-- Card 2: Follow Explomate DApp -->
+            <!-- SECTION 2: Follow Explomate DApp (2 Files Required) -->
             <div class="glass-panel p-5 sm:p-6 rounded-2xl border border-gold-400/30 space-y-4">
-              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
                 <div class="flex items-center gap-2.5">
                   <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center p-1 text-cyan-400">
                     <Cpu class="w-4 h-4" />
                   </div>
                   <div>
                     <h3 class="font-bold text-sm text-white">2. Follow Explomate (Web3 Ecosystem DApp Partner)</h3>
-                    <p class="text-xs text-cyan-400/90">Support the UBS DApp partner ecosystem on X & Instagram</p>
+                    <p class="text-xs text-cyan-400/90">Both 2 screenshot proofs required (X/Twitter & Instagram)</p>
                   </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" :class="explomateUploadedCount === 2 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-cyan-400/15 text-cyan-300 border border-cyan-400/30'">
+                  <Check v-if="explomateUploadedCount === 2" class="w-3.5 h-3.5" />
+                  <span>{{ explomateUploadedCount }} of 2 Uploaded</span>
                 </div>
               </div>
 
-              <!-- Explomate Links -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <a
-                  href="https://x.com/explomatee"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2.5 rounded-xl bg-obsidian-900 border border-white/10 hover:border-sky-500/50 hover:bg-sky-500/10 transition flex items-center justify-between text-xs text-slate-200 group"
-                >
-                  <div class="flex items-center gap-2">
-                    <SocialIcon name="Twitter" class="w-4 h-4 text-sky-400" />
-                    <span>X/Twitter @explomatee</span>
+              <!-- 2 Dedicated Upload Slots for Explomate -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                <!-- Slot 1: X / Twitter -->
+                <div class="p-3.5 rounded-xl bg-obsidian-900/90 border border-white/10 flex flex-col justify-between space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <SocialIcon name="Twitter" class="w-4 h-4 text-sky-400" />
+                      <span class="text-xs font-semibold text-white">X / Twitter</span>
+                    </div>
+                    <a
+                      href="https://x.com/explomatee"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-[10px] text-sky-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>@explomatee</span>
+                      <ExternalLink class="w-3 h-3" />
+                    </a>
                   </div>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />
-                </a>
 
-                <a
-                  href="https://www.instagram.com/explo.mate"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2.5 rounded-xl bg-obsidian-900 border border-white/10 hover:border-pink-500/50 hover:bg-pink-500/10 transition flex items-center justify-between text-xs text-slate-200 group"
-                >
-                  <div class="flex items-center gap-2">
-                    <SocialIcon name="Instagram" class="w-4 h-4 text-pink-400" />
-                    <span>Instagram @explo.mate</span>
+                  <!-- Upload or Preview -->
+                  <div v-if="form.proofExplomateXPreview" class="relative rounded-xl border border-sky-500/40 bg-sky-500/5 p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                      <img :src="form.proofExplomateXPreview" alt="X Proof" class="w-10 h-10 rounded-lg object-cover border border-sky-500/30 shrink-0" />
+                      <span class="text-[11px] text-emerald-300 truncate font-medium">X Proof Added</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeFile('explomate_x')"
+                      class="w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shrink-0 ml-1"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-500 group-hover:text-pink-400" />
-                </a>
-              </div>
 
-              <!-- Upload Screenshot or Username -->
-              <div class="pt-2">
-                <label class="block text-xs font-medium text-slate-300 mb-2">
-                  Upload a follow proof screenshot (or enter your X / IG username) *
-                </label>
-
-                <div v-if="form.proofExplomateFilePreview" class="relative inline-block mb-3">
-                  <img :src="form.proofExplomateFilePreview" alt="Preview Explomate" class="h-24 rounded-xl border border-cyan-400/40 object-cover" />
-                  <button
-                    type="button"
-                    @click="removeFile('explomate')"
-                    class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 shadow"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <label class="flex-1 px-4 py-3 rounded-xl border border-dashed border-cyan-400/40 hover:border-cyan-400 bg-obsidian-900/80 cursor-pointer flex items-center justify-center gap-2 text-xs text-slate-300 transition">
-                    <Upload class="w-4 h-4 text-cyan-400" />
-                    <span>{{ form.proofExplomateFile ? form.proofExplomateFile.name : 'Upload Proof Screenshot' }}</span>
+                  <label v-else class="px-3 py-4 rounded-xl border border-dashed border-sky-500/40 hover:border-sky-400 bg-obsidian-950 cursor-pointer flex flex-col items-center justify-center gap-1.5 text-center transition group">
+                    <Upload class="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform" />
+                    <span class="text-[11px] text-slate-300 font-medium">Upload X/Twitter Screenshot *</span>
                     <input
                       type="file"
                       accept="image/*"
                       class="sr-only"
-                      @change="(e) => handleFileUpload(e, 'explomate')"
+                      @change="(e) => handleFileUpload(e, 'explomate_x')"
                     />
                   </label>
-                  <input
-                    v-model="form.proofExplomateX"
-                    type="text"
-                    placeholder="Your X / IG username"
-                    class="sm:w-64 px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-cyan-400 text-white text-xs outline-none transition"
-                  />
+                </div>
+
+                <!-- Slot 2: Instagram -->
+                <div class="p-3.5 rounded-xl bg-obsidian-900/90 border border-white/10 flex flex-col justify-between space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <SocialIcon name="Instagram" class="w-4 h-4 text-pink-400" />
+                      <span class="text-xs font-semibold text-white">Instagram</span>
+                    </div>
+                    <a
+                      href="https://www.instagram.com/explo.mate"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-[10px] text-pink-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>@explo.mate</span>
+                      <ExternalLink class="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  <!-- Upload or Preview -->
+                  <div v-if="form.proofExplomateIgPreview" class="relative rounded-xl border border-pink-500/40 bg-pink-500/5 p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                      <img :src="form.proofExplomateIgPreview" alt="Explomate IG Proof" class="w-10 h-10 rounded-lg object-cover border border-pink-500/30 shrink-0" />
+                      <span class="text-[11px] text-emerald-300 truncate font-medium">IG Proof Added</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeFile('explomate_ig')"
+                      class="w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shrink-0 ml-1"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <label v-else class="px-3 py-4 rounded-xl border border-dashed border-pink-500/40 hover:border-pink-400 bg-obsidian-950 cursor-pointer flex flex-col items-center justify-center gap-1.5 text-center transition group">
+                    <Upload class="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
+                    <span class="text-[11px] text-slate-300 font-medium">Upload IG Screenshot *</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      class="sr-only"
+                      @change="(e) => handleFileUpload(e, 'explomate_ig')"
+                    />
+                  </label>
                 </div>
               </div>
             </div>
