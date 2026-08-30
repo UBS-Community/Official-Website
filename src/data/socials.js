@@ -32,7 +32,7 @@ export const socialLinks = [
     name: 'Discord',
     icon: 'MessageSquare',
     handle: 'UMB Blockchain Discord',
-    url: 'https://discord.gg/#',
+    url: 'https://discord.gg/YraYw9DRN',
     color: 'hover:text-indigo-400'
   },
   {

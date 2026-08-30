@@ -1,11 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import InvitationView from '@/views/InvitationView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/invitation',
+    name: 'invitation',
+    component: InvitationView
+  },
+  {
+    path: '/join',
+    redirect: '/invitation'
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
   }
 ]
 

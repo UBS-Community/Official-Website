@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   DialogRoot,
   DialogPortal,
@@ -7,7 +8,7 @@ import {
   DialogContent,
   DialogClose
 } from 'radix-vue'
-import { X, Sparkles, CheckCircle2, Send, ShieldAlert, ExternalLink, ArrowRight } from 'lucide-vue-next'
+import { X, Sparkles, CheckCircle2, Send, ShieldAlert, ExternalLink, ArrowRight, FileText } from 'lucide-vue-next'
 import SocialIcon from '@/components/SocialIcon.vue'
 
 const props = defineProps({
@@ -19,6 +20,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open'])
+const router = useRouter()
 
 const fullName = ref('')
 const email = ref('')
@@ -27,6 +29,11 @@ const major = ref('')
 const interest = ref('fundamental')
 const isSuccess = ref(false)
 const isLoading = ref(false)
+
+const goToFullInvitation = () => {
+  emit('update:open', false)
+  router.push('/invitation')
+}
 
 const handleRegister = () => {
   if (!fullName.value || !email.value || !major.value) return
@@ -70,26 +77,43 @@ const handleRegister = () => {
           </DialogClose>
         </div>
 
-        <!-- Direct WhatsApp Community Fast-Track Card -->
-        <div class="mb-5 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="flex items-center gap-3 text-left w-full sm:w-auto">
-            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <SocialIcon name="WhatsApp" class="w-5 h-5" />
+        <!-- Direct Actions & Full Wizard Banner -->
+        <div class="mb-5 space-y-2.5">
+          <div class="p-3.5 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-between gap-3">
+            <div class="text-left">
+              <div class="text-xs font-bold text-white">Official Guild Invitation Page</div>
+              <div class="text-[11px] text-gold-300">Verifikasi kampus, pilih track, & follow DApps</div>
             </div>
-            <div>
-              <div class="text-xs font-semibold text-white">Join Directly via WhatsApp</div>
-              <div class="text-[11px] text-emerald-300">Instant access to student discussions</div>
-            </div>
+            <button
+              @click="goToFullInvitation"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold text-obsidian-950 bg-gradient-to-r from-gold-300 to-gold-400 hover:from-gold-200 hover:to-gold-300 transition flex items-center gap-1.5 shrink-0 shadow"
+            >
+              <span>Buka Form Lengkap</span>
+              <ArrowRight class="w-3.5 h-3.5" />
+            </button>
           </div>
-          <a
-            href="https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-full sm:w-auto px-4 py-2 rounded-lg text-xs font-semibold text-obsidian-950 bg-emerald-400 hover:bg-emerald-300 transition flex items-center justify-center gap-1.5 shrink-0 shadow"
-          >
-            <span>Open WhatsApp</span>
-            <ExternalLink class="w-3.5 h-3.5" />
-          </a>
+
+          <!-- Direct WhatsApp Community Fast-Track Card -->
+          <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 text-left">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <SocialIcon name="WhatsApp" class="w-4 h-4" />
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-white">Official WhatsApp Group</div>
+                <div class="text-[11px] text-emerald-300">Instant community discussions</div>
+              </div>
+            </div>
+            <a
+              href="https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold text-obsidian-950 bg-emerald-400 hover:bg-emerald-300 transition flex items-center gap-1.5 shrink-0 shadow"
+            >
+              <span>Open WhatsApp</span>
+              <ExternalLink class="w-3 h-3" />
+            </a>
+          </div>
         </div>
 
         <div v-if="isSuccess" class="py-8 text-center space-y-4">
@@ -102,15 +126,24 @@ const handleRegister = () => {
           <p class="text-sm text-slate-300 max-w-sm mx-auto">
             Your membership is minted on-chain. An invite link to the private Discord alpha channels & onboarding call has been sent to your email.
           </p>
-          <div class="pt-2">
+          <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="https://discord.gg/YraYw9DRN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition shadow"
+            >
+              <SocialIcon name="Discord" class="w-4 h-4" />
+              <span>Join Discord Server</span>
+            </a>
             <a
               href="https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-obsidian-950 bg-emerald-400 hover:bg-emerald-300 transition shadow"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-obsidian-950 bg-emerald-400 hover:bg-emerald-300 transition shadow"
             >
               <SocialIcon name="WhatsApp" class="w-4 h-4" />
-              <span>Join WhatsApp Group Now</span>
+              <span>Join WhatsApp Group</span>
             </a>
           </div>
         </div>
@@ -171,10 +204,9 @@ const handleRegister = () => {
               v-model="interest"
               class="w-full px-4 py-2.5 rounded-xl bg-obsidian-800 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
             >
-              <option value="fundamental">Blockchain Fundamentals & Web3 Literacy</option>
-              <option value="development">Smart Contracts & Protocol Development</option>
-              <option value="business">DeFi, Tokenomics & Crypto Economics</option>
-              <option value="creative">UI/UX Design, Media & Community Growth</option>
+              <option value="developer">Developer & Smart Contracts</option>
+              <option value="finances">Finances & Tokenomics (DeFi)</option>
+              <option value="marketing">Marketing & Community Growth</option>
             </select>
           </div>
 
