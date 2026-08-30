@@ -2,7 +2,7 @@
  * UBS Google Sheets Direct Submission Service
  * 
  * Konsep seperti Google Forms: data langsung dikirim ke Google Sheets
- * via Google Apps Script Webhook. Tidak perlu admin page atau localStorage.
+ * via Google Apps Script Webhook.
  */
 
 // Google Apps Script Webhook URL resmi komunitas UBS
@@ -15,43 +15,33 @@ const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyAfiiRsD2coIku_cad
 export const submitToGoogleSheet = async (applicantData) => {
   const registrationId = `UBS-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase()}`
 
-  const payload = {
-    action: 'addApplicant',
-    timestamp: new Date().toISOString(),
-    id: registrationId,
-    fullName: applicantData.fullName,
-    nim: applicantData.nim,
-    birthDate: applicantData.birthDate,
-    university: applicantData.universityType === 'mercubuana'
-      ? 'Universitas Mercu Buana'
-      : applicantData.universityName,
-    campusBranch: applicantData.universityType === 'mercubuana'
-      ? applicantData.campusBranch
-      : 'External',
-    faculty: applicantData.faculty,
-    major: applicantData.major,
-    cohortYear: applicantData.cohortYear,
-    email: applicantData.email,
-    whatsapp: applicantData.whatsapp,
-    track: applicantData.trackLabel || applicantData.track,
-    proofUbsc: applicantData.proofUbsc
-      ? JSON.stringify(applicantData.proofUbsc)
-      : 'Verified',
-    proofExplomate: applicantData.proofExplomate
-      ? JSON.stringify(applicantData.proofExplomate)
-      : 'Verified'
-  }
+  const params = new URLSearchParams()
+  params.append('action', 'addApplicant')
+  params.append('timestamp', new Date().toISOString())
+  params.append('id', registrationId)
+  params.append('fullName', applicantData.fullName || '')
+  params.append('nim', applicantData.nim || '')
+  params.append('birthDate', applicantData.birthDate || '')
+  params.append('university', applicantData.universityType === 'mercubuana' ? 'Universitas Mercu Buana' : (applicantData.universityName || ''))
+  params.append('campusBranch', applicantData.universityType === 'mercubuana' ? (applicantData.campusBranch || '') : 'External')
+  params.append('faculty', applicantData.faculty || '')
+  params.append('major', applicantData.major || '')
+  params.append('cohortYear', applicantData.cohortYear || '')
+  params.append('email', applicantData.email || '')
+  params.append('whatsapp', applicantData.whatsapp || '')
+  params.append('track', applicantData.trackLabel || applicantData.track || '')
+  params.append('proofUbsc', applicantData.proofUbsc ? JSON.stringify(applicantData.proofUbsc) : 'Verified')
+  params.append('proofExplomate', applicantData.proofExplomate ? JSON.stringify(applicantData.proofExplomate) : 'Verified')
 
   try {
-    // POST ke Google Apps Script Web App
-    // mode: 'no-cors' agar browser bisa kirim ke domain Google tanpa CORS issue
+    // Kirim menggunakan URLSearchParams dengan POST & mode: 'no-cors'
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: JSON.stringify(payload)
+      body: params.toString()
     })
 
     return { success: true, id: registrationId }

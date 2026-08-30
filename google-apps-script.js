@@ -3,22 +3,12 @@
  * UMB BLOCKCHAIN SOCIETY (UBS) — GOOGLE APPS SCRIPT WEBHOOK FOR GOOGLE SHEETS
  * ==============================================================================
  * 
- * PANDUAN CEPAT SETUP GOOGLE SHEETS (Hanya butuh 1-2 menit):
+ * ⚠️ PENTING AGAR DATA BISA MASUK OTOMATIS:
+ * Saat melakukan Deploy di Google Apps Script:
+ * 1. "Execute as" (Jalankan sebagai)  -> Pilih: "Me" (Email Anda)
+ * 2. "Who has access" (Akses)        -> Pilih: "Anyone" (Siapa saja)  <-- WAJIB PILIH INI!
  * 
- * 1. Buka Google Sheets baru di Google Drive Anda (misal beri judul: "Data Pendaftaran UMB Blockchain Society").
- * 2. Di menu atas Google Sheets, klik: "Extensions" (Ekstensi) > "Apps Script".
- * 3. Hapus semua kode default yang ada di editor Apps Script, lalu PASTE SELURUH KODE DI BAWAH INI.
- * 4. Klik tombol "Deploy" (Terapkan) berwarna biru di kanan atas > Pilih "New deployment" (Penerapan baru).
- * 5. Klik ikon Gerigi (Select type) > Pilih "Web app".
- * 6. Atur konfigurasi berikut:
- *    - Description: "UBS Invitation Webhook"
- *    - Execute as: "Me" (Email Google Anda)
- *    - Who has access: "Anyone" (Siapa saja, bahkan anonim - agar form di website bisa mengirim data tanpa login Google).
- * 7. Klik "Deploy" > Izinkan akses akun Google Anda ("Authorize access").
- * 8. Copy "Web app URL" yang diberikan (berakhiran /exec).
- * 9. Buka halaman `/admin` di website UBS > Klik "Pengaturan Google Sheets" > Paste Webhook URL & Link Google Sheet Anda!
- * 
- * Selesai! Setiap mahasiswa yang mendaftar di web otomatis langsung masuk ke Google Sheet Anda secara realtime!
+ * Jika "Who has access" dipilih "Only myself", Google akan memblokir kiriman form dari website!
  * ==============================================================================
  */
 
@@ -52,22 +42,28 @@ function doPost(e) {
       sheet.setFrozenRows(1);
     }
 
-    var data;
-    if (e.postData && e.postData.contents) {
-      try {
-        data = JSON.parse(e.postData.contents);
-      } catch (parseErr) {
-        data = e.parameter;
-      }
-    } else {
+    var data = {};
+    
+    // 1. Coba baca dari URL parameters / Form Data (paling reliable)
+    if (e && e.parameter && Object.keys(e.parameter).length > 0) {
       data = e.parameter;
     }
+    
+    // 2. Coba baca dari JSON body jika ada
+    if (e && e.postData && e.postData.contents) {
+      try {
+        var parsed = JSON.parse(e.postData.contents);
+        data = Object.assign({}, data, parsed);
+      } catch (err) {
+        // Bukan JSON, gunakan parameter biasa
+      }
+    }
 
-    // Append Row
+    // Append Row ke Google Sheets
     sheet.appendRow([
       new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-      data.id || "UBS-" + new Date().getFullYear() + "-" + Math.floor(100 + Math.random() * 900),
-      data.fullName || "",
+      data.id || "UBS-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000),
+      data.fullName || data.name || "",
       "'" + (data.nim || ""), // Beri tanda petik agar format NIM tidak terpotong nol di depan
       data.birthDate || "",
       data.university || "Universitas Mercu Buana",
@@ -77,13 +73,13 @@ function doPost(e) {
       data.cohortYear || "",
       data.email || "",
       "'" + (data.whatsapp || ""), // Format nomor WA
-      data.track || "",
+      data.track || data.trackLabel || "",
       data.proofUbsc || "Verified",
       data.proofExplomate || "Verified"
     ]);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ result: "success", message: "Data pendaftar berhasil disimpan ke Google Sheets" }))
+      .createTextOutput(JSON.stringify({ result: "success", message: "Data berhasil disimpan" }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -96,6 +92,10 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  // Tangani juga jika dikirim via GET
+  if (e && e.parameter && (e.parameter.fullName || e.parameter.nim)) {
+    return doPost(e);
+  }
   return ContentService
     .createTextOutput(JSON.stringify({ status: "online", service: "UBS Google Sheets Webhook API" }))
     .setMimeType(ContentService.MimeType.JSON);
