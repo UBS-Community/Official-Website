@@ -540,7 +540,7 @@ const handleSubmit = async () => {
                   v-model="form.fullName"
                   type="text"
                   required
-                  placeholder="e.g. Rayhan Aziel Abbrar"
+                  placeholder="e.g. Satoshi Nakamoto"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
@@ -551,7 +551,7 @@ const handleSubmit = async () => {
                   v-model="form.nim"
                   type="text"
                   required
-                  placeholder="e.g. 41522010099"
+                  placeholder="e.g. 4152xxxxxxx"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
