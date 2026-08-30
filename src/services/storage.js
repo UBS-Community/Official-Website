@@ -3,16 +3,10 @@
  * 
  * Konsep seperti Google Forms: data langsung dikirim ke Google Sheets
  * via Google Apps Script Webhook. Tidak perlu admin page atau localStorage.
- * 
- * SETUP:
- * 1. Buka Google Sheets baru > Extensions > Apps Script
- * 2. Paste kode dari file google-apps-script.js
- * 3. Deploy > New Deployment > Web App (Anyone can access)
- * 4. Ganti WEBHOOK_URL di bawah dengan URL Web App yang dihasilkan
  */
 
-// ⚡ GANTI URL INI dengan URL Web App Google Apps Script kamu!
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbz_REPLACE_WITH_YOUR_REAL_WEBHOOK_URL/exec'
+// Google Apps Script Webhook URL resmi komunitas UBS
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyAfiiRsD2coIku_cadv2BBTZ0QiixH3qba0Zn1RJrkiyMuswk-60pfPNoR7N1GSuvrSQ/exec'
 
 /**
  * Kirim data pendaftar langsung ke Google Sheets
@@ -33,7 +27,7 @@ export const submitToGoogleSheet = async (applicantData) => {
       : applicantData.universityName,
     campusBranch: applicantData.universityType === 'mercubuana'
       ? applicantData.campusBranch
-      : 'Luar UMB',
+      : 'External',
     faculty: applicantData.faculty,
     major: applicantData.major,
     cohortYear: applicantData.cohortYear,
@@ -48,19 +42,15 @@ export const submitToGoogleSheet = async (applicantData) => {
       : 'Verified'
   }
 
-  // Jika URL masih sample/placeholder, simulasi saja
-  if (WEBHOOK_URL.includes('REPLACE_WITH_YOUR_REAL')) {
-    console.log('[UBS] Demo mode: Data would be sent to Google Sheets:', payload)
-    return { success: true, id: registrationId, simulated: true }
-  }
-
   try {
     // POST ke Google Apps Script Web App
     // mode: 'no-cors' agar browser bisa kirim ke domain Google tanpa CORS issue
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
       body: JSON.stringify(payload)
     })
 
