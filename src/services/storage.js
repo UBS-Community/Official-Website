@@ -1,16 +1,14 @@
 /**
  * UBS Google Sheets Direct Submission Service
  * 
- * Konsep seperti Google Forms: data langsung dikirim ke Google Sheets
- * via Google Apps Script Webhook.
+ * Data pendaftaran langsung dikirim ke Google Sheets via Google Apps Script Webhook.
  */
 
-// Google Apps Script Webhook URL resmi komunitas UBS
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyAfiiRsD2coIku_cadv2BBTZ0QiixH3qba0Zn1RJrkiyMuswk-60pfPNoR7N1GSuvrSQ/exec'
+// Google Apps Script Webhook URL resmi komunitas UBS (Live & Active)
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyKXBOP4_QSEclgID_EhO-fOPoGWC9W53fSF3k7Era9E3EloeW_Qw6oXVKHKZOCp4i-BQ/exec'
 
 /**
  * Kirim data pendaftar langsung ke Google Sheets
- * Mirip cara kerja Google Forms submit
  */
 export const submitToGoogleSheet = async (applicantData) => {
   const registrationId = `UBS-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase()}`
@@ -34,7 +32,6 @@ export const submitToGoogleSheet = async (applicantData) => {
   params.append('proofExplomate', applicantData.proofExplomate ? JSON.stringify(applicantData.proofExplomate) : 'Verified')
 
   try {
-    // Kirim menggunakan URLSearchParams dengan POST & mode: 'no-cors'
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
