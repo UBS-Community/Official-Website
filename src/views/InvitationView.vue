@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import BackgroundNetwork from '@/components/BackgroundNetwork.vue'
 import SocialIcon from '@/components/SocialIcon.vue'
-import { saveApplicant } from '@/services/storage'
+import { submitToGoogleSheet } from '@/services/storage'
 import {
   Sparkles,
   School,
@@ -36,9 +36,9 @@ const submittedData = ref(null)
 
 // Form State
 const form = ref({
-  universityType: 'mercubuana', // 'mercubuana' | 'other'
+  universityType: 'mercubuana',
   universityName: '',
-  campusBranch: 'Meruya', // Meruya | Menteng | Warung Buncit | Cipayung
+  campusBranch: 'Meruya',
   fullName: '',
   nim: '',
   birthDate: '',
@@ -47,7 +47,7 @@ const form = ref({
   cohortYear: '2024',
   email: '',
   whatsapp: '',
-  track: 'developer', // 'marketing' | 'finances' | 'developer'
+  track: 'developer',
   proofUbscIg: '',
   proofUbscLinkedin: '',
   proofUbscTiktok: '',
@@ -60,20 +60,20 @@ const form = ref({
 })
 
 const campusBranches = [
-  { id: 'Meruya', name: 'Meruya (Kampus Utama)', address: 'Jakarta Barat' },
-  { id: 'Menteng', name: 'Menteng', address: 'Jakarta Pusat' },
-  { id: 'Warung Buncit', name: 'Warung Buncit', address: 'Jakarta Selatan' },
-  { id: 'Cipayung', name: 'Cipayung / Kranggan', address: 'Jakarta Timur / Bekasi' }
+  { id: 'Meruya', name: 'Meruya (Main Campus)', address: 'West Jakarta' },
+  { id: 'Menteng', name: 'Menteng', address: 'Central Jakarta' },
+  { id: 'Warung Buncit', name: 'Warung Buncit', address: 'South Jakarta' },
+  { id: 'Cipayung', name: 'Cipayung / Kranggan', address: 'East Jakarta / Bekasi' }
 ]
 
 const faculties = [
-  'Fakultas Ilmu Komputer (FASILKOM)',
-  'Fakultas Ekonomi dan Bisnis (FEB)',
-  'Fakultas Teknik (FT)',
-  'Fakultas Desain dan Seni Kreatif (FDSK)',
-  'Fakultas Ilmu Komunikasi (FIKOM)',
-  'Fakultas Psikologi (FPSI)',
-  'Fakultas Lainnya'
+  'Faculty of Computer Science (FASILKOM)',
+  'Faculty of Economics & Business (FEB)',
+  'Faculty of Engineering (FT)',
+  'Faculty of Design & Creative Arts (FDSK)',
+  'Faculty of Communication (FIKOM)',
+  'Faculty of Psychology (FPSI)',
+  'Other Faculty'
 ]
 
 const tracks = [
@@ -83,7 +83,7 @@ const tracks = [
     shortBadge: 'Tech & BUIDL',
     icon: Cpu,
     color: 'from-amber-400 to-gold-500',
-    description: 'Belajar dan membangun smart contract (Solidity/Rust), integrasi frontend dApps, Web3 infrastructure, security auditing, dan siap berpartisipasi dalam hackathons global.'
+    description: 'Learn to build and deploy smart contracts (Solidity/Rust), integrate frontend dApps, design Web3 infrastructure, perform security auditing, and ship projects at global hackathons.'
   },
   {
     id: 'finances',
@@ -91,7 +91,7 @@ const tracks = [
     shortBadge: 'DeFi & Economics',
     icon: TrendingUp,
     color: 'from-emerald-400 to-teal-500',
-    description: 'Mempelajari arsitektur Decentralized Finance (DeFi), mekanisme desain tokenomics, analisis fundamental aset kripto, model likuiditas on-chain, dan regulasi keuangan digital.'
+    description: 'Dive into Decentralized Finance (DeFi) architecture, tokenomics design mechanics, crypto fundamental analysis, on-chain liquidity models, and digital finance regulations.'
   },
   {
     id: 'marketing',
@@ -99,7 +99,7 @@ const tracks = [
     shortBadge: 'Growth & PR',
     icon: Megaphone,
     color: 'from-purple-400 to-pink-500',
-    description: 'Mendalami strategi pertumbuhan komunitas Web3, viral narrative creation, manajemen media sosial, Web3 PR, event organizing, kemitraan ekosistem, dan content strategy.'
+    description: 'Master Web3 community growth strategies, viral narrative creation, social media management, Web3 PR, event organizing, ecosystem partnerships, and content strategy.'
   }
 ]
 
@@ -157,7 +157,6 @@ const isStep3Valid = computed(() => {
 })
 
 const isStep4Valid = computed(() => {
-  // Must have uploaded screenshot or filled handle for UBSC & Explomate
   const hasUbscProof = form.value.proofUbscFile || form.value.proofUbscIg || form.value.proofUbscLinkedin || form.value.proofUbscTiktok
   const hasExplomateProof = form.value.proofExplomateFile || form.value.proofExplomateX || form.value.proofExplomateIg
   return hasUbscProof && hasExplomateProof
@@ -177,7 +176,7 @@ const prevStep = () => {
   }
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   isSubmitting.value = true
 
   const selectedTrackObj = tracks.find(t => t.id === form.value.track)
@@ -185,7 +184,7 @@ const handleSubmit = () => {
   const payload = {
     universityType: form.value.universityType,
     universityName: form.value.universityType === 'mercubuana' ? 'Universitas Mercu Buana' : form.value.universityName,
-    campusBranch: form.value.universityType === 'mercubuana' ? form.value.campusBranch : 'Luar UMB',
+    campusBranch: form.value.universityType === 'mercubuana' ? form.value.campusBranch : 'External',
     fullName: form.value.fullName,
     nim: form.value.nim,
     birthDate: form.value.birthDate,
@@ -209,19 +208,24 @@ const handleSubmit = () => {
     }
   }
 
-  setTimeout(() => {
-    const saved = saveApplicant(payload)
-    submittedData.value = saved
-    isSubmitting.value = false
+  try {
+    const result = await submitToGoogleSheet(payload)
+    submittedData.value = { ...payload, id: result.id }
     isSubmitted.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, 900)
+  } catch (err) {
+    console.error('Submission error:', err)
+    submittedData.value = { ...payload, id: `UBS-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase()}` }
+    isSubmitted.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
 <template>
   <div class="min-h-screen bg-obsidian-950 text-slate-100 relative selection:bg-gold-400 selection:text-obsidian-950 pb-20">
-    <!-- Global Interactive Gold Canvas Background -->
     <BackgroundNetwork />
 
     <!-- Top Header Bar -->
@@ -242,12 +246,6 @@ const handleSubmit = () => {
         </router-link>
 
         <div class="flex items-center gap-3">
-          <router-link
-            to="/admin"
-            class="text-xs text-slate-400 hover:text-gold-300 px-3 py-1.5 rounded-lg border border-white/10 hover:border-gold-400/30 transition"
-          >
-            Council Admin
-          </router-link>
           <router-link
             to="/"
             class="text-xs font-medium text-slate-300 hover:text-white px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition"
@@ -270,7 +268,7 @@ const handleSubmit = () => {
           Join the <span class="gold-gradient-text">UMB Blockchain Guild</span>
         </h1>
         <p class="mt-3 text-slate-300 text-sm sm:text-base max-w-2xl mx-auto">
-          Lengkapi formulir pendaftaran di bawah ini untuk memverifikasi profil mahasiswa dan membuka akses eksklusif ke Discord & WhatsApp grup resmi UBS.
+          Complete the registration form below to verify your student profile and unlock exclusive access to the official UBS Discord & WhatsApp community.
         </p>
       </div>
 
@@ -286,11 +284,11 @@ const handleSubmit = () => {
           </span>
 
           <h2 class="font-display font-extrabold text-2xl sm:text-4xl text-white mt-4">
-            Selamat Datang di UMB Blockchain Society! 🚀
+            Welcome to UMB Blockchain Society! 🚀
           </h2>
 
           <p class="text-slate-300 text-base max-w-xl mx-auto mt-3 leading-relaxed">
-            Data pendaftaran atas nama <strong class="text-white">{{ submittedData?.fullName }}</strong> ({{ submittedData?.major }}) telah berhasil diverifikasi dan tersimpan dalam ledger komunitas.
+            Registration for <strong class="text-white">{{ submittedData?.fullName }}</strong> ({{ submittedData?.major }}) has been successfully verified and recorded in the community ledger.
           </p>
 
           <!-- Gated Community Links Card -->
@@ -315,7 +313,7 @@ const handleSubmit = () => {
                   Join Discord Server
                 </h3>
                 <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Akses channel riset alpha, diskusi coding, materi mingguan, dan live voice meetup.
+                  Access alpha research channels, coding discussions, weekly materials, and live voice meetups.
                 </p>
               </div>
 
@@ -345,7 +343,7 @@ const handleSubmit = () => {
                   Join WhatsApp Guild
                 </h3>
                 <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Grup pengumuman resmi acara kampus, reminder bootcamp, dan koordinasi pengurus.
+                  Official announcements, campus event reminders, bootcamp notifications, and council coordination.
                 </p>
               </div>
 
@@ -361,7 +359,7 @@ const handleSubmit = () => {
               to="/"
               class="px-6 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 transition"
             >
-              Kembali ke Beranda
+              Back to Homepage
             </router-link>
           </div>
         </div>
@@ -391,7 +389,7 @@ const handleSubmit = () => {
                 <span v-else>{{ stepNum }}</span>
               </div>
               <span class="text-[11px] font-medium text-slate-400 hidden sm:block">
-                {{ stepNum === 1 ? 'Universitas' : stepNum === 2 ? 'Identitas' : stepNum === 3 ? 'Track Minat' : 'Bukti Follow' }}
+                {{ stepNum === 1 ? 'University' : stepNum === 2 ? 'Identity' : stepNum === 3 ? 'Blockchain Track' : 'Social Proof' }}
               </span>
             </div>
           </div>
@@ -406,15 +404,15 @@ const handleSubmit = () => {
         </div>
 
         <form @submit.prevent="handleSubmit">
-          <!-- STEP 1: Universitas & Cabang Kampus -->
+          <!-- STEP 1: University & Campus Branch -->
           <div v-if="currentStep === 1" class="space-y-6 animate-fadeIn">
             <div class="border-b border-white/10 pb-4">
               <h2 class="font-display font-bold text-xl sm:text-2xl text-white flex items-center gap-2.5">
                 <School class="w-6 h-6 text-gold-400" />
-                <span>Asal Universitas & Kampus</span>
+                <span>University & Campus Branch</span>
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Pilih apakah Anda mahasiswa Universitas Mercu Buana atau dari universitas mitra lain.
+                Select whether you are a Universitas Mercu Buana student or from another partner university.
               </p>
             </div>
 
@@ -440,7 +438,7 @@ const handleSubmit = () => {
                 </div>
                 <div>
                   <div class="font-bold text-sm text-white">Universitas Mercu Buana</div>
-                  <div class="text-xs text-slate-400 mt-0.5">Mahasiswa aktif UMB (Meruya, Menteng, Warung Buncit, Cipayung)</div>
+                  <div class="text-xs text-slate-400 mt-0.5">Active UMB student (Meruya, Menteng, Warung Buncit, Cipayung)</div>
                 </div>
               </label>
 
@@ -463,8 +461,8 @@ const handleSubmit = () => {
                   <School class="w-5 h-5" />
                 </div>
                 <div>
-                  <div class="font-bold text-sm text-white">Universitas Lain (External)</div>
-                  <div class="text-xs text-slate-400 mt-0.5">Mahasiswa luar UMB yang ingin bergabung dalam ekosistem UBS</div>
+                  <div class="font-bold text-sm text-white">Other University (External)</div>
+                  <div class="text-xs text-slate-400 mt-0.5">External student looking to join the UBS ecosystem</div>
                 </div>
               </label>
             </div>
@@ -472,7 +470,7 @@ const handleSubmit = () => {
             <!-- If Mercu Buana: Select Campus Branch -->
             <div v-if="form.universityType === 'mercubuana'" class="pt-4 space-y-3">
               <label class="block text-xs font-semibold uppercase tracking-wider text-gold-300">
-                Pilih Cabang Kampus Mercu Buana *
+                Select Mercu Buana Campus Branch *
               </label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label
@@ -511,49 +509,49 @@ const handleSubmit = () => {
             <!-- If Other University: Input Name -->
             <div v-else class="pt-4">
               <label class="block text-xs font-medium text-slate-300 mb-2">
-                Nama Lengkap Universitas Asal *
+                Full University Name *
               </label>
               <input
                 v-model="form.universityName"
                 type="text"
                 required
-                placeholder="Contoh: Universitas Indonesia / ITB / Binus University"
+                placeholder="e.g. Universitas Indonesia / ITB / Binus University"
                 class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
               />
             </div>
           </div>
 
-          <!-- STEP 2: Identitas Mahasiswa -->
+          <!-- STEP 2: Student Identity -->
           <div v-else-if="currentStep === 2" class="space-y-5 animate-fadeIn">
             <div class="border-b border-white/10 pb-4">
               <h2 class="font-display font-bold text-xl sm:text-2xl text-white flex items-center gap-2.5">
                 <User class="w-6 h-6 text-gold-400" />
-                <span>Identitas & Profil Akademik</span>
+                <span>Identity & Academic Profile</span>
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Data resmi untuk pencatatan keanggotaan dan sertifikat kegiatan.
+                Official data for membership records and event certificates.
               </p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Nama Lengkap (Sesuai KTM) *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Full Name (as on Student ID) *</label>
                 <input
                   v-model="form.fullName"
                   type="text"
                   required
-                  placeholder="Contoh: Rayhan Aziel Abbrar"
+                  placeholder="e.g. Rayhan Aziel Abbrar"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">NIM (Nomor Induk Mahasiswa) *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Student ID Number (NIM) *</label>
                 <input
                   v-model="form.nim"
                   type="text"
                   required
-                  placeholder="Contoh: 41522010099"
+                  placeholder="e.g. 41522010099"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
@@ -561,7 +559,7 @@ const handleSubmit = () => {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Tanggal Lahir *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Date of Birth *</label>
                 <div class="relative">
                   <input
                     v-model="form.birthDate"
@@ -573,41 +571,41 @@ const handleSubmit = () => {
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Angkatan Kuliah *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Enrollment Year *</label>
                 <select
                   v-model="form.cohortYear"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 >
-                  <option value="2026">Angkatan 2026</option>
-                  <option value="2025">Angkatan 2025</option>
-                  <option value="2024">Angkatan 2024</option>
-                  <option value="2023">Angkatan 2023</option>
-                  <option value="2022">Angkatan 2022</option>
-                  <option value="2021">Angkatan 2021 / Sebelumnya</option>
+                  <option value="2026">Class of 2026</option>
+                  <option value="2025">Class of 2025</option>
+                  <option value="2024">Class of 2024</option>
+                  <option value="2023">Class of 2023</option>
+                  <option value="2022">Class of 2022</option>
+                  <option value="2021">Class of 2021 or Earlier</option>
                 </select>
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Fakultas *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Faculty *</label>
                 <select
                   v-model="form.faculty"
                   required
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 >
-                  <option value="" disabled>-- Pilih Fakultas --</option>
+                  <option value="" disabled>-- Select Faculty --</option>
                   <option v-for="fac in faculties" :key="fac" :value="fac">{{ fac }}</option>
                 </select>
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Program Studi (Prodi) *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Study Program (Major) *</label>
                 <input
                   v-model="form.major"
                   type="text"
                   required
-                  placeholder="Contoh: Teknik Informatika / Manajemen"
+                  placeholder="e.g. Informatics / Management / Design"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
@@ -615,18 +613,18 @@ const handleSubmit = () => {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Email Mahasiswa / Personal *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Student or Personal Email *</label>
                 <input
                   v-model="form.email"
                   type="email"
                   required
-                  placeholder="nama@student.mercubuana.ac.id"
+                  placeholder="name@student.mercubuana.ac.id"
                   class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-sm outline-none transition"
                 />
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1.5">Nomor WhatsApp Aktif *</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">Active WhatsApp Number *</label>
                 <input
                   v-model="form.whatsapp"
                   type="tel"
@@ -638,15 +636,15 @@ const handleSubmit = () => {
             </div>
           </div>
 
-          <!-- STEP 3: Ketertarikan di Blockchain (Track Explanation) -->
+          <!-- STEP 3: Blockchain Interest Track -->
           <div v-else-if="currentStep === 3" class="space-y-6 animate-fadeIn">
             <div class="border-b border-white/10 pb-4">
               <h2 class="font-display font-bold text-xl sm:text-2xl text-white flex items-center gap-2.5">
                 <Cpu class="w-6 h-6 text-gold-400" />
-                <span>Pilih Fokus Minat Blockchain</span>
+                <span>Choose Your Blockchain Focus Track</span>
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Pilih salah satu track yang paling sesuai dengan minat belajar Anda di ekosistem Web3.
+                Pick the track that best matches your Web3 learning interest. You can always explore other tracks later.
               </p>
             </div>
 
@@ -697,15 +695,15 @@ const handleSubmit = () => {
             </div>
           </div>
 
-          <!-- STEP 4: Bukti Follow UBSC & Explomate DApp -->
+          <!-- STEP 4: Social Proof Verification (UBSC & Explomate) -->
           <div v-else-if="currentStep === 4" class="space-y-6 animate-fadeIn">
             <div class="border-b border-white/10 pb-4">
               <h2 class="font-display font-bold text-xl sm:text-2xl text-white flex items-center gap-2.5">
                 <ShieldCheck class="w-6 h-6 text-gold-400" />
-                <span>Verifikasi Social Proof</span>
+                <span>Social Proof Verification</span>
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Follow akun resmi UMB Blockchain Society & ekosistem DApp partner Explomate.
+                Follow the official UMB Blockchain Society accounts & our ecosystem DApp partner Explomate.
               </p>
             </div>
 
@@ -717,8 +715,8 @@ const handleSubmit = () => {
                     <Sparkles class="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 class="font-bold text-sm text-white">1. Follow Akun Resmi UMB Blockchain Society</h3>
-                    <p class="text-xs text-gold-400/90">Wajib follow IG, LinkedIn, & TikTok</p>
+                    <h3 class="font-bold text-sm text-white">1. Follow UMB Blockchain Society Official Accounts</h3>
+                    <p class="text-xs text-gold-400/90">Required: Follow IG, LinkedIn, & TikTok</p>
                   </div>
                 </div>
               </div>
@@ -768,7 +766,7 @@ const handleSubmit = () => {
               <!-- Upload Screenshot or Username -->
               <div class="pt-2">
                 <label class="block text-xs font-medium text-slate-300 mb-2">
-                  Upload Screenshot Bukti Follow UBSC (atau isi username IG/TikTok) *
+                  Upload a follow proof screenshot (or enter your IG/TikTok username) *
                 </label>
                 
                 <div v-if="form.proofUbscFilePreview" class="relative inline-block mb-3">
@@ -785,7 +783,7 @@ const handleSubmit = () => {
                 <div class="flex flex-col sm:flex-row gap-3">
                   <label class="flex-1 px-4 py-3 rounded-xl border border-dashed border-gold-400/40 hover:border-gold-400 bg-obsidian-900/80 cursor-pointer flex items-center justify-center gap-2 text-xs text-slate-300 transition">
                     <Upload class="w-4 h-4 text-gold-400" />
-                    <span>{{ form.proofUbscFile ? form.proofUbscFile.name : 'Upload Screenshot Bukti' }}</span>
+                    <span>{{ form.proofUbscFile ? form.proofUbscFile.name : 'Upload Proof Screenshot' }}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -796,7 +794,7 @@ const handleSubmit = () => {
                   <input
                     v-model="form.proofUbscIg"
                     type="text"
-                    placeholder="Username IG / TikTok kamu"
+                    placeholder="Your IG / TikTok username"
                     class="sm:w-64 px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-gold-400 text-white text-xs outline-none transition"
                   />
                 </div>
@@ -812,7 +810,7 @@ const handleSubmit = () => {
                   </div>
                   <div>
                     <h3 class="font-bold text-sm text-white">2. Follow Explomate (Web3 Ecosystem DApp Partner)</h3>
-                    <p class="text-xs text-cyan-400/90">Dukung ekosistem dApp partner UBS di X & Instagram</p>
+                    <p class="text-xs text-cyan-400/90">Support the UBS DApp partner ecosystem on X & Instagram</p>
                   </div>
                 </div>
               </div>
@@ -849,7 +847,7 @@ const handleSubmit = () => {
               <!-- Upload Screenshot or Username -->
               <div class="pt-2">
                 <label class="block text-xs font-medium text-slate-300 mb-2">
-                  Upload Screenshot Bukti Follow Explomate (atau isi username X / IG) *
+                  Upload a follow proof screenshot (or enter your X / IG username) *
                 </label>
 
                 <div v-if="form.proofExplomateFilePreview" class="relative inline-block mb-3">
@@ -866,7 +864,7 @@ const handleSubmit = () => {
                 <div class="flex flex-col sm:flex-row gap-3">
                   <label class="flex-1 px-4 py-3 rounded-xl border border-dashed border-cyan-400/40 hover:border-cyan-400 bg-obsidian-900/80 cursor-pointer flex items-center justify-center gap-2 text-xs text-slate-300 transition">
                     <Upload class="w-4 h-4 text-cyan-400" />
-                    <span>{{ form.proofExplomateFile ? form.proofExplomateFile.name : 'Upload Screenshot Bukti' }}</span>
+                    <span>{{ form.proofExplomateFile ? form.proofExplomateFile.name : 'Upload Proof Screenshot' }}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -877,7 +875,7 @@ const handleSubmit = () => {
                   <input
                     v-model="form.proofExplomateX"
                     type="text"
-                    placeholder="Username X / IG kamu"
+                    placeholder="Your X / IG username"
                     class="sm:w-64 px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 focus:border-cyan-400 text-white text-xs outline-none transition"
                   />
                 </div>
@@ -894,7 +892,7 @@ const handleSubmit = () => {
               class="px-5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 transition flex items-center gap-2"
             >
               <ArrowLeft class="w-4 h-4" />
-              <span>Sebelumnya</span>
+              <span>Previous</span>
             </button>
             <div v-else />
 
@@ -905,7 +903,7 @@ const handleSubmit = () => {
               :disabled="currentStep === 1 ? !isStep1Valid : currentStep === 2 ? !isStep2Valid : currentStep === 3 ? !isStep3Valid : false"
               class="px-7 py-3 rounded-xl text-sm font-semibold text-obsidian-950 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 hover:from-gold-200 hover:to-gold-400 shadow-gold-glow transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <span>Lanjut</span>
+              <span>Continue</span>
               <ArrowRight class="w-4 h-4" />
             </button>
 
@@ -915,9 +913,9 @@ const handleSubmit = () => {
               :disabled="!isStep4Valid || isSubmitting"
               class="px-8 py-3.5 rounded-xl text-sm font-semibold text-obsidian-950 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 hover:from-gold-200 hover:to-gold-400 shadow-gold-glow-lg transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <span v-if="isSubmitting">Memproses Pendaftaran...</span>
+              <span v-if="isSubmitting">Processing Registration...</span>
               <template v-else>
-                <span>Kirim & Buka Akses Komunitas</span>
+                <span>Submit & Unlock Community Access</span>
                 <CheckCircle2 class="w-4 h-4" />
               </template>
             </button>

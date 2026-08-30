@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { programs } from '@/data/programs'
 import {
   GraduationCap,
@@ -20,7 +21,7 @@ import {
   DialogClose
 } from 'radix-vue'
 
-const emit = defineEmits(['open-join'])
+const router = useRouter()
 const selectedProgram = ref(null)
 const isModalOpen = ref(false)
 
@@ -29,9 +30,9 @@ const openProgramDetail = (prog) => {
   isModalOpen.value = true
 }
 
-const handleJoinProgram = (prog) => {
+const handleJoinProgram = () => {
   isModalOpen.value = false
-  emit('open-join', prog.title)
+  router.push('/invitation')
 }
 </script>
 
@@ -102,7 +103,7 @@ const handleJoinProgram = (prog) => {
               <!-- Action CTAs -->
               <div class="flex flex-wrap items-center gap-4">
                 <button
-                  @click="emit('open-join', 'UBS Blockchain Fundamentals')"
+                  @click="router.push('/invitation')"
                   class="px-6 py-3 rounded-xl font-semibold text-sm text-obsidian-950 bg-gradient-to-r from-gold-300 to-gold-500 shadow-gold-glow hover:from-gold-200 hover:to-gold-400 transition-all duration-300 flex items-center gap-2"
                 >
                   <span>Apply for Cohort</span>

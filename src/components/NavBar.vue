@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { navLinks } from '@/data/navigation'
 import { Menu, X, ArrowRight, Sparkles } from 'lucide-vue-next'
 import {
@@ -11,7 +12,7 @@ import {
   DialogClose
 } from 'radix-vue'
 
-const emit = defineEmits(['open-join'])
+const router = useRouter()
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
 
@@ -31,9 +32,9 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
-const handleJoinClick = () => {
+const goToInvitation = () => {
   closeMobileMenu()
-  emit('open-join')
+  router.push('/invitation')
 }
 </script>
 
@@ -84,7 +85,7 @@ const handleJoinClick = () => {
         <!-- Action CTA (Desktop) -->
         <div class="hidden md:flex items-center gap-3">
           <button
-            @click="emit('open-join')"
+            @click="goToInvitation"
             class="relative group overflow-hidden px-4 py-2 rounded-xl text-sm font-semibold text-obsidian-950 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 hover:from-gold-200 hover:to-gold-400 shadow-gold-glow transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
           >
             <Sparkles class="w-4 h-4 text-obsidian-950/80" />
@@ -132,7 +133,7 @@ const handleJoinClick = () => {
 
                 <div class="pt-6 border-t border-white/10 flex flex-col gap-3">
                   <button
-                    @click="handleJoinClick"
+                    @click="goToInvitation"
                     class="w-full py-3 rounded-xl text-sm font-semibold text-obsidian-950 bg-gradient-to-r from-gold-300 to-gold-500 shadow-gold-glow flex items-center justify-center gap-2"
                   >
                     <span>Join Guild Now</span>

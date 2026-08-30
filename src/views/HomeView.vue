@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import BackgroundNetwork from '@/components/BackgroundNetwork.vue'
 import NavBar from '@/components/NavBar.vue'
 import HeroSection from '@/components/HeroSection.vue'
@@ -10,15 +9,6 @@ import ProgramSection from '@/components/ProgramSection.vue'
 import TeamSection from '@/components/TeamSection.vue'
 import ContactSection from '@/components/ContactSection.vue'
 import FooterSection from '@/components/FooterSection.vue'
-import JoinModal from '@/components/JoinModal.vue'
-
-const isJoinModalOpen = ref(false)
-const selectedProgramToJoin = ref('')
-
-const openJoinModal = (programName = '') => {
-  selectedProgramToJoin.value = typeof programName === 'string' ? programName : ''
-  isJoinModalOpen.value = true
-}
 </script>
 
 <template>
@@ -27,11 +17,11 @@ const openJoinModal = (programName = '') => {
     <BackgroundNetwork />
 
     <!-- Navbar -->
-    <NavBar @open-join="openJoinModal" />
+    <NavBar />
 
     <main class="relative z-10">
       <!-- Hero Section -->
-      <HeroSection @open-join="openJoinModal" />
+      <HeroSection />
 
       <!-- About Section -->
       <AboutSection />
@@ -43,7 +33,7 @@ const openJoinModal = (programName = '') => {
       <MissionSection />
 
       <!-- Programs & Incubation -->
-      <ProgramSection @open-join="openJoinModal" />
+      <ProgramSection />
 
       <!-- Core Team / Governance -->
       <TeamSection />
@@ -54,11 +44,5 @@ const openJoinModal = (programName = '') => {
 
     <!-- Footer -->
     <FooterSection />
-
-    <!-- Radix UI Join Modal -->
-    <JoinModal
-      v-model:open="isJoinModalOpen"
-      :default-program="selectedProgramToJoin"
-    />
   </div>
 </template>

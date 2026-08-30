@@ -1,7 +1,12 @@
 <script setup>
+import { useRouter } from 'vue-router'
 import { ArrowRight, BookOpen, ShieldCheck, Zap, Globe, Sparkles, Terminal } from 'lucide-vue-next'
 
-const emit = defineEmits(['open-join'])
+const router = useRouter()
+
+const goToInvitation = () => {
+  router.push('/invitation')
+}
 </script>
 
 <template>
@@ -11,7 +16,7 @@ const emit = defineEmits(['open-join'])
     <div class="pointer-events-none absolute top-1/3 right-10 w-[380px] h-[380px] bg-amber-600/10 blur-[130px] rounded-full" />
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <!-- Modern Tech / Crypto Badge (No AI slop pill, no em dash) -->
+      <!-- Modern Tech / Crypto Badge -->
       <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-obsidian-900/90 border border-gold-400/30 text-xs font-mono mb-8 backdrop-blur-xl shadow-gold-glow">
         <span class="flex items-center gap-1 text-gold-400 font-semibold uppercase tracking-wider text-[11px]">
           <Terminal class="w-3.5 h-3.5" />
@@ -27,14 +32,14 @@ const emit = defineEmits(['open-join'])
       </div>
 
       <!-- Main Headline -->
-      <h1 class="font-display font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
+      <h1 class="font-display font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight text-white max-4xl mx-auto leading-[1.15]">
         BUIDLing the Decentralized Future with
         <span class="block mt-2 gold-gradient-text">
           UMB Blockchain Society
         </span>
       </h1>
 
-      <!-- Paraphrased Sub-tagline (Clean, no em-dash, crypto native) -->
+      <!-- Sub-tagline -->
       <p class="mt-6 max-w-3xl mx-auto text-base sm:text-xl text-slate-300 font-normal leading-relaxed">
         The premier cross-faculty Web3 student guild at Universitas Mercu Buana. Learn blockchain mechanics, tokenomics, and smart contracts from ground zero. <span class="text-gold-300 font-medium">Open to all majors with zero coding experience required.</span>
       </p>
@@ -42,7 +47,7 @@ const emit = defineEmits(['open-join'])
       <!-- Action Buttons -->
       <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
         <button
-          @click="emit('open-join')"
+          @click="goToInvitation"
           class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-base text-obsidian-950 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 hover:from-gold-200 hover:to-gold-400 shadow-gold-glow-lg transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-2 group"
         >
           <Sparkles class="w-5 h-5 text-obsidian-950/80" />
