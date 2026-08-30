@@ -1,6 +1,37 @@
 import * as XLSX from 'xlsx'
 
+// Storage keys & Google Sheets configuration
 const STORAGE_KEY = 'ubs_guild_applicants_v1'
+const GOOGLE_SHEET_CONFIG_KEY = 'ubs_google_sheet_config_v1'
+
+// Default Google Sheets Webhook URL & Live Sheet URL
+// Pettingi grup can easily customize these in the /admin portal or through this file
+export const DEFAULT_SHEET_CONFIG = {
+  webhookUrl: 'https://script.google.com/macros/s/AKfycbz_SAMPLE_UBS_WEBHOOK_ENDPOINT/exec',
+  liveSheetUrl: 'https://docs.google.com/spreadsheets/d/1SAMPLE_SPREADSHEET_ID/edit?usp=sharing'
+}
+
+export const getGoogleSheetConfig = () => {
+  try {
+    const raw = localStorage.getItem(GOOGLE_SHEET_CONFIG_KEY)
+    if (!raw) return DEFAULT_SHEET_CONFIG
+    return { ...DEFAULT_SHEET_CONFIG, ...JSON.parse(raw) }
+  } catch (e) {
+    return DEFAULT_SHEET_CONFIG
+  }
+}
+
+export const saveGoogleSheetConfig = (newConfig) => {
+  try {
+    const current = getGoogleSheetConfig()
+    const merged = { ...current, ...newConfig }
+    localStorage.setItem(GOOGLE_SHEET_CONFIG_KEY, JSON.stringify(merged))
+    return merged
+  } catch (e) {
+    console.error('Failed to save Google Sheet config:', e)
+    return DEFAULT_SHEET_CONFIG
+  }
+}
 
 // Default sample data for demo/testing if storage is empty
 const defaultSampleData = [
@@ -21,16 +52,17 @@ const defaultSampleData = [
     track: 'developer',
     trackLabel: 'Developer & Smart Contract',
     proofUbsc: {
-      instagram: true,
-      linkedin: true,
-      tiktok: true,
-      proofFileName: 'proof_ubsc.png'
+      ig: '@zhao.leihan',
+      linkedin: 'Rayhan Aziel',
+      tiktok: '@rayhan',
+      hasScreenshot: true
     },
     proofExplomate: {
-      twitter: true,
-      instagram: true,
-      proofFileName: 'proof_explomate.png'
-    }
+      x: '@explomate_fan',
+      ig: '@rayhan',
+      hasScreenshot: true
+    },
+    syncedToSheet: true
   }
 ]
 
@@ -48,14 +80,71 @@ export const getApplicants = () => {
   }
 }
 
-export const saveApplicant = (applicantData) => {
+/**
+ * Send applicant record to Google Sheets via Apps Script Webhook
+ */
+export const sendToGoogleSheet = async (applicantData) => {
+  const config = getGoogleSheetConfig()
+  if (!config.webhookUrl || config.webhookUrl.includes('SAMPLE_')) {
+    console.log('Google Sheets Webhook URL is in demo/sample mode.')
+    return { success: true, simulated: true }
+  }
+
+  try {
+    const payload = {
+      action: 'addApplicant',
+      timestamp: new Date().toISOString(),
+      id: applicantData.id,
+      fullName: applicantData.fullName,
+      nim: applicantData.nim,
+      birthDate: applicantData.birthDate,
+      university: applicantData.universityType === 'mercubuana' ? 'Universitas Mercu Buana' : applicantData.universityName,
+      campusBranch: applicantData.universityType === 'mercubuana' ? applicantData.campusBranch : 'Luar UMB',
+      faculty: applicantData.faculty,
+      major: applicantData.major,
+      cohortYear: applicantData.cohortYear,
+      email: applicantData.email,
+      whatsapp: applicantData.whatsapp,
+      track: applicantData.trackLabel || applicantData.track,
+      proofUbsc: applicantData.proofUbsc ? JSON.stringify(applicantData.proofUbsc) : 'Verified',
+      proofExplomate: applicantData.proofExplomate ? JSON.stringify(applicantData.proofExplomate) : 'Verified'
+    }
+
+    // Use mode: 'no-cors' so browser can send to Google Apps Script smoothly
+    await fetch(config.webhookUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    return { success: true }
+  } catch (err) {
+    console.warn('Google Sheet sync attempt error:', err)
+    return { success: false, error: err.message }
+  }
+}
+
+export const saveApplicant = async (applicantData) => {
   try {
     const existing = getApplicants()
     const newEntry = {
       id: `UBS-${new Date().getFullYear()}-${String(existing.length + 1).padStart(3, '0')}`,
       createdAt: new Date().toISOString(),
-      ...applicantData
+      ...applicantData,
+      syncedToSheet: false
     }
+
+    // Attempt real-time sync to Google Sheets
+    try {
+      const sheetResult = await sendToGoogleSheet(newEntry)
+      newEntry.syncedToSheet = sheetResult.success
+    } catch (e) {
+      console.warn('Sync to Google Sheet skipped or offline:', e)
+    }
+
     const updated = [newEntry, ...existing]
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     return newEntry
