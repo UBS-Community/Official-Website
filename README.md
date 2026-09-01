@@ -60,7 +60,6 @@
 │   │   ├── ProgramSection.vue     # Genesis cohort & Radix syllabus modal
 │   │   ├── TeamSection.vue        # Core leadership council
 │   │   ├── ContactSection.vue     # WhatsApp guild card & message transmitter
-│   │   ├── JoinModal.vue          # Radix dialog onboarding modal
 │   │   ├── SocialIcon.vue         # Vector SVG icon renderer
 │   │   └── FooterSection.vue      # Gold divider, quick links & copyright
 │   ├── data/                # Modular content data
@@ -70,9 +69,12 @@
 │   │   ├── socials.js
 │   │   └── team.js
 │   ├── views/
-│   │   └── HomeView.vue     # Root aggregation view
+│   │   ├── HomeView.vue           # Root aggregation view
+│   │   └── InvitationView.vue     # Multi-step onboarding form
 │   ├── router/
 │   │   └── index.js
+│   ├── services/
+│   │   └── storage.js             # Real-time Google Sheets webhook submission
 │   ├── App.vue
 │   └── main.js
 ├── index.html
@@ -124,12 +126,12 @@
 
 ## 👥 Core Leadership Council
 
-| Role | Alias | Name |
+| Role | Alias | Full Name |
 | :--- | :--- | :--- |
 | **Chief Executive Officer (CEO)** | `SmartDinamite` | Saepudin |
-| **Chief Technology Officer (CTO)** | `0xAnakMommy` | Rayhan Aziel Abbrar |
-| **Chief Marketing Officer (CMO)** | `ReynaImo` | Viola |
-| **Chief Operating Officer (COO)** | `StarmanMagician` | Sakti |
+| **Chief Technology Officer (CTO)** | `0xAnakMommy` | Rayhan Aziel Abbrar / Rayhan Young |
+| **Chief Marketing Officer (CMO)** | `ReynaImo` | Viola Yosefani |
+| **Chief Operating Officer (COO)** | `StarmanMagician` | Sakti Attila Aulia Bintang |
 
 ---
 
