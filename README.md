@@ -12,7 +12,7 @@
   <strong>The premier student-led Web3 and blockchain guild at Universitas Mercu Buana, Jakarta.</strong>
 </p>
 
-[🌐 Official WhatsApp Guild](https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv) • [📸 Instagram](https://www.instagram.com/ubs.community?utm_source=qr&igsi=dHR4eDQ3bnZvbW1u) • [💼 LinkedIn](https://www.linkedin.com/company/umb-blockchain-society-ubs) • [🎵 TikTok](https://www.tiktok.com/@ubs.community)
+[🌐 Official WhatsApp Guild](https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv) • [💬 Discord Server](https://discord.gg/9V8T3Pahq) • [✈️ Telegram](https://t.me/+O9ydrDps5SgyYjI1) • [📸 Instagram](https://www.instagram.com/ubs.community?utm_source=qr&igsi=dHR4eDQ3bnZvbW1u) • [💼 LinkedIn](https://www.linkedin.com/company/umb-blockchain-society-ubs) • [🎵 TikTok](https://www.tiktok.com/@ubs.community)
 
 </div>
 
@@ -138,6 +138,8 @@
 ## 🔗 Community & Social Channels
 
 - **WhatsApp Guild**: [Join Official Group](https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv)
+- **Discord Server**: [Join Discord Guild](https://discord.gg/9V8T3Pahq)
+- **Telegram Channel**: [Join Telegram Community](https://t.me/+O9ydrDps5SgyYjI1)
 - **Instagram**: [@ubs.community](https://www.instagram.com/ubs.community?utm_source=qr&igsi=dHR4eDQ3bnZvbW1u)
 - **LinkedIn**: [UMB Blockchain Society](https://www.linkedin.com/company/umb-blockchain-society-ubs)
 - **TikTok**: [@ubs.community](https://www.tiktok.com/@ubs.community)

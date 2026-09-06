@@ -50,24 +50,12 @@ const goToInvitation = () => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
         <!-- Brand Logo -->
-        <a href="#home" class="flex items-center gap-3 group">
-          <div class="relative w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 transition-transform duration-300 group-hover:scale-105 group-hover:border-gold-400/70 group-hover:shadow-gold-glow">
-            <img
-              src="@/assets/logo/logo-simple.png"
-              alt="UMB Blockchain Society Logo"
-              class="w-full h-full object-contain"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-            />
-            <span class="hidden text-gold-400 font-bold font-display text-sm">UBS</span>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-display font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-gold-300 transition-colors">
-              UMB Blockchain Society
-            </span>
-            <span class="text-[10px] tracking-wider uppercase text-gold-400/80 font-medium">
-              Universitas Mercu Buana
-            </span>
-          </div>
+        <a href="#home" class="flex items-center group">
+          <img
+            src="@/assets/logo/logo-full.png"
+            alt="UMB Blockchain Society"
+            class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
         </a>
 
         <!-- Desktop Navigation -->
@@ -107,12 +95,11 @@ const goToInvitation = () => {
               <DialogContent class="fixed inset-y-0 right-0 z-50 w-full max-w-xs bg-obsidian-900 border-l border-gold-400/20 p-6 flex flex-col justify-between shadow-2xl">
                 <div>
                   <div class="flex items-center justify-between pb-6 border-b border-white/10">
-                    <div class="flex items-center gap-2.5">
-                      <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1">
-                        <img src="@/assets/logo/logo-simple.png" alt="UBS" class="w-full h-full object-contain" />
-                      </div>
-                      <span class="font-display font-bold text-white text-base">UBS Guild</span>
-                    </div>
+                    <img
+                      src="@/assets/logo/logo-full.png"
+                      alt="UMB Blockchain Society"
+                      class="h-8 w-auto object-contain"
+                    />
                     <DialogClose class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition">
                       <X class="w-5 h-5" />
                     </DialogClose>

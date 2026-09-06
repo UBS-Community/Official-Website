@@ -267,18 +267,12 @@ const handleSubmit = async () => {
     <!-- Top Header Bar -->
     <header class="relative z-20 border-b border-gold-400/20 bg-obsidian-950/80 backdrop-blur-md sticky top-0">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <router-link to="/" class="flex items-center gap-3 group">
-          <div class="w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 shadow-gold-glow">
-            <img src="@/assets/logo/logo-simple.png" alt="UBS Logo" class="w-full h-full object-contain" />
-          </div>
-          <div>
-            <span class="font-display font-bold text-white text-base sm:text-lg block group-hover:text-gold-300 transition-colors">
-              UMB Blockchain Society
-            </span>
-            <span class="text-[10px] text-gold-400 font-medium uppercase tracking-wider block">
-              Official Guild Invitation & Onboarding
-            </span>
-          </div>
+        <router-link to="/" class="flex items-center group">
+          <img
+            src="@/assets/logo/logo-full.png"
+            alt="UMB Blockchain Society"
+            class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
         </router-link>
 
         <div class="flex items-center gap-3">
@@ -328,34 +322,34 @@ const handleSubmit = async () => {
           </p>
 
           <!-- Gated Community Links Card -->
-          <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+          <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
             <!-- Discord Invite -->
             <a
-              href="https://discord.gg/YraYw9DRN"
+              href="https://discord.gg/9V8T3Pahq"
               target="_blank"
               rel="noopener noreferrer"
-              class="group p-6 rounded-2xl bg-indigo-950/50 border border-indigo-500/40 hover:border-indigo-400 hover:bg-indigo-900/60 transition-all duration-300 shadow-xl flex flex-col justify-between"
+              class="group p-5 rounded-2xl bg-indigo-950/50 border border-indigo-500/40 hover:border-indigo-400 hover:bg-indigo-900/60 transition-all duration-300 shadow-xl flex flex-col justify-between"
             >
               <div>
-                <div class="flex items-center justify-between mb-4">
-                  <div class="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform">
-                    <MessageSquare class="w-6 h-6" />
+                <div class="flex items-center justify-between mb-3.5">
+                  <div class="w-11 h-11 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform">
+                    <MessageSquare class="w-5 h-5" />
                   </div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                    Discord Guild
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                    Discord Server
                   </span>
                 </div>
-                <h3 class="font-display font-bold text-lg text-white group-hover:text-indigo-200">
+                <h3 class="font-display font-bold text-base text-white group-hover:text-indigo-200">
                   Join Discord Server
                 </h3>
                 <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Access alpha research channels, coding discussions, weekly materials, and live voice meetups.
+                  Alpha research channels, coding discussions, and voice meetups.
                 </p>
               </div>
 
-              <div class="mt-6 pt-4 border-t border-indigo-500/20 flex items-center justify-between text-xs font-semibold text-indigo-300">
-                <span>discord.gg/YraYw9DRN</span>
-                <ExternalLink class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <div class="mt-5 pt-3.5 border-t border-indigo-500/20 flex items-center justify-between text-xs font-semibold text-indigo-300">
+                <span>discord.gg/9V8T3Pahq</span>
+                <ExternalLink class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </a>
 
@@ -364,28 +358,58 @@ const handleSubmit = async () => {
               href="https://chat.whatsapp.com/FMT3wj7dTAHBW5AatcT4tv"
               target="_blank"
               rel="noopener noreferrer"
-              class="group p-6 rounded-2xl bg-emerald-950/50 border border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-900/60 transition-all duration-300 shadow-xl flex flex-col justify-between"
+              class="group p-5 rounded-2xl bg-emerald-950/50 border border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-900/60 transition-all duration-300 shadow-xl flex flex-col justify-between"
             >
               <div>
-                <div class="flex items-center justify-between mb-4">
-                  <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
-                    <SocialIcon name="WhatsApp" class="w-6 h-6" />
+                <div class="flex items-center justify-between mb-3.5">
+                  <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                    <SocialIcon name="WhatsApp" class="w-5 h-5" />
                   </div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     WhatsApp Group
                   </span>
                 </div>
-                <h3 class="font-display font-bold text-lg text-white group-hover:text-emerald-200">
+                <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-200">
                   Join WhatsApp Guild
                 </h3>
                 <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Official announcements, campus event reminders, bootcamp notifications, and council coordination.
+                  Official announcements, bootcamp reminders, and council updates.
                 </p>
               </div>
 
-              <div class="mt-6 pt-4 border-t border-emerald-500/20 flex items-center justify-between text-xs font-semibold text-emerald-300">
+              <div class="mt-5 pt-3.5 border-t border-emerald-500/20 flex items-center justify-between text-xs font-semibold text-emerald-300">
                 <span>chat.whatsapp.com/UBS</span>
-                <ExternalLink class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ExternalLink class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </a>
+
+            <!-- Telegram Invite -->
+            <a
+              href="https://t.me/+O9ydrDps5SgyYjI1"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group p-5 rounded-2xl bg-sky-950/50 border border-sky-500/40 hover:border-sky-400 hover:bg-sky-900/60 transition-all duration-300 shadow-xl flex flex-col justify-between"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-3.5">
+                  <div class="w-11 h-11 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 group-hover:scale-110 transition-transform">
+                    <SocialIcon name="Telegram" class="w-5 h-5" />
+                  </div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                    Telegram Channel
+                  </span>
+                </div>
+                <h3 class="font-display font-bold text-base text-white group-hover:text-sky-200">
+                  Join Telegram Channel
+                </h3>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Direct alpha alerts, crypto newsfeed, and global student community chat.
+                </p>
+              </div>
+
+              <div class="mt-5 pt-3.5 border-t border-sky-500/20 flex items-center justify-between text-xs font-semibold text-sky-300">
+                <span>t.me/UBS_Community</span>
+                <ExternalLink class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </a>
           </div>

@@ -18,19 +18,12 @@ const scrollToTop = () => {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
         <!-- Brand Info (2 cols) -->
         <div class="lg:col-span-2 space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 shadow-gold-glow">
-              <img
-                src="@/assets/logo/logo-simple.png"
-                alt="UBS Logo"
-                class="w-full h-full object-contain"
-                onerror="this.style.display='none'"
-              />
-            </div>
-            <div>
-              <span class="font-display font-bold text-lg text-white block">UMB Blockchain Society</span>
-              <span class="text-[11px] text-gold-400 font-medium uppercase tracking-wider">Universitas Mercu Buana</span>
-            </div>
+          <div class="flex items-center">
+            <img
+              src="@/assets/logo/logo-full.png"
+              alt="UMB Blockchain Society"
+              class="h-10 sm:h-12 w-auto object-contain"
+            />
           </div>
           <p class="text-sm text-slate-400 max-w-sm leading-relaxed">
             The cross-faculty student guild at Universitas Mercu Buana dedicated to blockchain education, smart contract research, and Web3 builder incubation.

@@ -29,11 +29,20 @@ export const socialLinks = [
     isHighlight: true
   },
   {
+    name: 'Telegram',
+    icon: 'Telegram',
+    handle: 'UBS Telegram Community',
+    url: 'https://t.me/+O9ydrDps5SgyYjI1',
+    color: 'hover:text-sky-400',
+    isHighlight: true
+  },
+  {
     name: 'Discord',
     icon: 'MessageSquare',
     handle: 'UMB Blockchain Discord',
-    url: 'https://discord.gg/YraYw9DRN',
-    color: 'hover:text-indigo-400'
+    url: 'https://discord.gg/9V8T3Pahq',
+    color: 'hover:text-indigo-400',
+    isHighlight: true
   },
   {
     name: 'X / Twitter',
