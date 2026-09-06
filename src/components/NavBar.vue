@@ -50,11 +50,11 @@ const goToInvitation = () => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
         <!-- Brand Logo -->
-        <a href="#home" class="flex items-center group">
+        <a href="#home" class="flex items-center group py-0.5">
           <img
             src="@/assets/logo/logo-full.png"
             alt="UMB Blockchain Society"
-            class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            class="h-14 sm:h-16 w-auto max-h-[60px] object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </a>
 
@@ -98,7 +98,7 @@ const goToInvitation = () => {
                     <img
                       src="@/assets/logo/logo-full.png"
                       alt="UMB Blockchain Society"
-                      class="h-8 w-auto object-contain"
+                      class="h-11 w-auto object-contain"
                     />
                     <DialogClose class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition">
                       <X class="w-5 h-5" />

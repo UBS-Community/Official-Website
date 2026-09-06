@@ -267,11 +267,11 @@ const handleSubmit = async () => {
     <!-- Top Header Bar -->
     <header class="relative z-20 border-b border-gold-400/20 bg-obsidian-950/80 backdrop-blur-md sticky top-0">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <router-link to="/" class="flex items-center group">
+        <router-link to="/" class="flex items-center group py-0.5">
           <img
             src="@/assets/logo/logo-full.png"
             alt="UMB Blockchain Society"
-            class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            class="h-14 sm:h-16 w-auto max-h-[60px] object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </router-link>
 

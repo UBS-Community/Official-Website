@@ -18,11 +18,11 @@ const scrollToTop = () => {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
         <!-- Brand Info (2 cols) -->
         <div class="lg:col-span-2 space-y-4">
-          <div class="flex items-center">
+          <div class="flex items-center mb-3">
             <img
               src="@/assets/logo/logo-full.png"
               alt="UMB Blockchain Society"
-              class="h-10 sm:h-12 w-auto object-contain"
+              class="h-16 sm:h-20 w-auto max-h-[85px] object-contain"
             />
           </div>
           <p class="text-sm text-slate-400 max-w-sm leading-relaxed">
