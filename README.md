@@ -132,6 +132,7 @@
 | **Chief Technology Officer (CTO)** | `0xAnakMommy` | Rayhan Aziel Abbrar / Rayhan Young |
 | **Chief Marketing Officer (CMO)** | `ReynaImo` | Viola Yosefani |
 | **Chief Operating Officer (COO)** | `StarmanMagician` | Sakti Attila Aulia Bintang |
+| **Admin for Digital Community** | `rafifmsn` | Rafif Muchsin |
 
 ---
 

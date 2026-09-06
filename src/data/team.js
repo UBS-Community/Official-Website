@@ -62,5 +62,20 @@ export const teamMembers = [
       linkedin: 'https://www.linkedin.com/in/sakti-bintang',
       instagram: 'https://instagram.com/saktibintaang'
     }
+  },
+  {
+    id: 'community-admin',
+    role: 'Admin for Digital Community',
+    roleShort: 'Community Admin',
+    alias: 'rafifmsn',
+    fullName: 'Rafif Muchsin',
+    bio: 'Managing and scaling digital community channels, technical pipelines, and builder engagement across Discord, Telegram, and developer ecosystems.',
+    imageFile: 'rafif.webp',
+    initials: 'RM',
+    socials: {
+      website: 'https://rafifmsn.com',
+      linkedin: 'https://www.linkedin.com/in/rafifmsn/',
+      instagram: 'https://www.instagram.com/rafifmsn'
+    }
   }
 ]

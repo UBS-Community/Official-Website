@@ -1,6 +1,6 @@
 <script setup>
 import { teamMembers } from '@/data/team'
-import { Linkedin, Twitter, Github, Instagram, Shield } from 'lucide-vue-next'
+import { Linkedin, Twitter, Github, Instagram, Shield, Globe } from 'lucide-vue-next'
 
 const getTeamImage = (filename) => {
   try {
@@ -34,8 +34,8 @@ const onImageError = (event) => {
         </p>
       </div>
 
-      <!-- Team Grid (4 Leaders) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Team Grid (5 Leaders) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <div
           v-for="member in teamMembers"
           :key="member.id"
@@ -67,7 +67,7 @@ const onImageError = (event) => {
           </div>
 
           <!-- Name & Alias -->
-          <h3 class="font-display font-bold text-lg text-white group-hover:text-gold-200 transition-colors">
+          <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-gold-200 transition-colors">
             {{ member.alias }}
           </h3>
           <p class="text-xs text-slate-400 font-medium mb-3">
@@ -80,7 +80,17 @@ const onImageError = (event) => {
           </p>
 
           <!-- Social Links -->
-          <div class="mt-auto pt-4 border-t border-white/5 w-full flex items-center justify-center gap-3">
+          <div class="mt-auto pt-4 border-t border-white/5 w-full flex items-center justify-center gap-2.5 flex-wrap">
+            <a
+              v-if="member.socials.website"
+              :href="member.socials.website"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-8 h-8 rounded-lg bg-white/5 hover:bg-gold-400/20 text-slate-400 hover:text-gold-300 flex items-center justify-center transition"
+              :aria-label="`${member.alias} Website`"
+            >
+              <Globe class="w-4 h-4" />
+            </a>
             <a
               v-if="member.socials.linkedin"
               :href="member.socials.linkedin"
@@ -92,7 +102,7 @@ const onImageError = (event) => {
               <Linkedin class="w-4 h-4" />
             </a>
             <a
-              v-if="member.socials.twitter"
+              v-if="member.socials.twitter && member.socials.twitter !== '#'"
               :href="member.socials.twitter"
               target="_blank"
               rel="noopener noreferrer"
@@ -102,7 +112,7 @@ const onImageError = (event) => {
               <Twitter class="w-4 h-4" />
             </a>
             <a
-              v-if="member.socials.github"
+              v-if="member.socials.github && member.socials.github !== '#'"
               :href="member.socials.github"
               target="_blank"
               rel="noopener noreferrer"
@@ -112,7 +122,7 @@ const onImageError = (event) => {
               <Github class="w-4 h-4" />
             </a>
             <a
-              v-if="member.socials.instagram"
+              v-if="member.socials.instagram && member.socials.instagram !== '#'"
               :href="member.socials.instagram"
               target="_blank"
               rel="noopener noreferrer"
