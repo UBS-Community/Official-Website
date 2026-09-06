@@ -53,7 +53,7 @@ const goToInvitation = () => {
         <a href="#home" class="flex items-center gap-3 group">
           <div class="relative w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 transition-transform duration-300 group-hover:scale-105 group-hover:border-gold-400/70 group-hover:shadow-gold-glow">
             <img
-              src="@/assets/logo/ubs-logo.png"
+              src="@/assets/logo/logo-simple.png"
               alt="UMB Blockchain Society Logo"
               class="w-full h-full object-contain"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
@@ -109,7 +109,7 @@ const goToInvitation = () => {
                   <div class="flex items-center justify-between pb-6 border-b border-white/10">
                     <div class="flex items-center gap-2.5">
                       <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1">
-                        <img src="@/assets/logo/ubs-logo.png" alt="UBS" class="w-full h-full object-contain" />
+                        <img src="@/assets/logo/logo-simple.png" alt="UBS" class="w-full h-full object-contain" />
                       </div>
                       <span class="font-display font-bold text-white text-base">UBS Guild</span>
                     </div>

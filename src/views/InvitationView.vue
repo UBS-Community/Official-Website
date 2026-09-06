@@ -269,7 +269,7 @@ const handleSubmit = async () => {
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <router-link to="/" class="flex items-center gap-3 group">
           <div class="w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 shadow-gold-glow">
-            <img src="@/assets/logo/ubs-logo.png" alt="UBS Logo" class="w-full h-full object-contain" />
+            <img src="@/assets/logo/logo-simple.png" alt="UBS Logo" class="w-full h-full object-contain" />
           </div>
           <div>
             <span class="font-display font-bold text-white text-base sm:text-lg block group-hover:text-gold-300 transition-colors">

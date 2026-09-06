@@ -21,7 +21,7 @@ const scrollToTop = () => {
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center p-1.5 shadow-gold-glow">
               <img
-                src="@/assets/logo/ubs-logo.png"
+                src="@/assets/logo/logo-simple.png"
                 alt="UBS Logo"
                 class="w-full h-full object-contain"
                 onerror="this.style.display='none'"
